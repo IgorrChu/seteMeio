@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="inicio" id="inicio">
+        <div class="box">
+            <div class="conteudo">
+                <h1>Jogue Sete e Meio</h1>
+                <p>Digite o seu nome para Jogar:</p>
+                <input type="text" id="inputNome">
+                <button onclick="entrar()">Entrar</button>
+            </div>
+        </div>
+    </div>
+    <div id="jogo" style="display: none;">
+        <div class="mesa">
+        </div>
+        <div class="container">
+
+            <div class="btns">
+                <button id="btnPuxar" class="puxar" onclick="puxar()">Puxar mais uma carta</button>
+                <button id="again" class="again" onclick="deNovo()" style="display: none;">Jogar Novamente</button>
+                <button id="btnPassar" class="passar" onclick="passarVez()">Passar a Vez</button>
+            </div>
+            <div class="maos">
+                <div class="J">
+                    <div id="jogador">
+                        <p id="nomeJ"></p>
+
+                    </div>
+                    <div class="maoJ">
+                        <div id="divMsg">
+
+                        </div>
+                        <div class="pontuacao">
+                            <p id="pontos"></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="divFim"></div>
+                <div id="aviso" style="display: none;"></div>
+                <div class="B">
+                    <div class="banca">
+                        <p id="nomeB"></p>
+                    </div>
+                    <div class="maoB">
+                        <div id="divBanca">
+
+                        </div>
+                        <div class="pontuacaoB">
+                            <p id="pontosBa"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+    var cartas = {
+        carta: ["Ás", "2", "3", "4", "5", "6", "7", "Valete", "Rainha", "Rei"],
+        valor: [1, 2, 3, 4, 5, 6, 7, 0.5, 0.5, 0.5]
+    }
+    var naipeCarta = {
+        naipe: ["copas", "espadas", "ouros", "paus"],
+        copas: ['<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/01_of_hearts_01.svg/800px-01_of_hearts_01.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/02_of_hearts.svg/800px-02_of_hearts.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/03_of_hearts.svg/800px-03_of_hearts.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/04_of_hearts.svg/800px-04_of_hearts.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/05_of_hearts.svg/800px-05_of_hearts.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/06_of_hearts.svg/800px-06_of_hearts.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/07_of_hearts.svg/800px-07_of_hearts.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Jack_of_hearts_en.svg/800px-Jack_of_hearts_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Queen_of_hearts_en.svg/800px-Queen_of_hearts_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/King_of_hearts_en.svg/800px-King_of_hearts_en.svg.png" alt="">'],
+
+        espadas: ['<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/01_of_spades_01.svg/800px-01_of_spades_01.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/02_of_spades.svg/800px-02_of_spades.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/03_of_spades.svg/800px-03_of_spades.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/04_of_spades.svg/800px-04_of_spades.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/05_of_spades.svg/800px-05_of_spades.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/06_of_spades.svg/800px-06_of_spades.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/07_of_spades.svg/800px-07_of_spades.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Jack_of_spades_en.svg/800px-Jack_of_spades_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Queen_of_spades_en.svg/800px-Queen_of_spades_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/King_of_spades_en.svg/800px-King_of_spades_en.svg.png" alt="">'],
+
+        ouros: ['<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/01_of_diamonds_01.svg/800px-01_of_diamonds_01.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/02_of_diamonds.svg/800px-02_of_diamonds.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/03_of_diamonds.svg/800px-03_of_diamonds.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/04_of_diamonds.svg/800px-04_of_diamonds.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/05_of_diamonds.svg/800px-05_of_diamonds.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/06_of_diamonds.svg/800px-06_of_diamonds.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/07_of_diamonds.svg/800px-07_of_diamonds.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Jack_of_diamonds_en.svg/800px-Jack_of_diamonds_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Queen_of_diamonds_en.svg/800px-Queen_of_diamonds_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/King_of_diamonds_en.svg/800px-King_of_diamonds_en.svg.png" alt="">'],
+
+        paus: ['<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/01_of_clubs_01.svg/800px-01_of_clubs_01.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/02_of_clubs.svg/800px-02_of_clubs.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/03_of_clubs.svg/800px-03_of_clubs.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/04_of_clubs.svg/800px-04_of_clubs.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/05_of_clubs.svg/800px-05_of_clubs.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/06_of_clubs.svg/800px-06_of_clubs.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/07_of_clubs.svg/800px-07_of_clubs.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Jack_of_clubs_en.svg/800px-Jack_of_clubs_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Queen_of_clubs_en.svg/800px-Queen_of_clubs_en.svg.png" alt="">',
+            '<img width="100px" class="carta" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/King_of_clubs_en.svg/800px-King_of_clubs_en.svg.png" alt="">'],
+
+    }
+
+    var nome = '';
+    var anterior = 0;
+    var pontosJ = 0;
+    var pontosB = 0;
+
+    function entrar() {
+        nome = inputNome.value;
+        inicio.style.display = 'none'
+        jogo.style.display = 'block'
+        iniciar();
+    }
+
+    function puxar() {
+        var carta = Number(Math.random() * (cartas.carta.length - 1)).toFixed();
+        var naipeA = Number(Math.random() * (naipeCarta.naipe.length - 1)).toFixed();
+        var atual = carta + naipeA;
+
+        if (atual != anterior) {
+            pontosJ += cartas.valor[carta]
+            anterior = atual
+            if (naipeA == 0) {
+                if (pontosJ < 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.espadas[carta]}`
+                } else if (pontosJ > 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.espadas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>${nome} Estourou!</p> <br>`
+                    fimB()
+                } else if (pontosJ == 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.espadas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimJ()
+                }
+            } else if (naipeA == 1) {
+                if (pontosJ < 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.ouros[carta]}`
+                } else if (pontosJ > 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.ouros[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>${nome} Estourou!</p> <br>`
+                    fimB()
+                } else if (pontosJ == 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.ouros[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimJ()
+                }
+            } else if (naipeA == 2) {
+                if (pontosJ < 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.copas[carta]}`
+                } else if (pontosJ > 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.copas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>${nome} Estourou!</p> <br>`
+                    fimB()
+                } else if (pontosJ == 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.copas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimJ()
+                }
+            } else if (naipeA == 3) {
+                if (pontosJ < 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.paus[carta]}`
+                } else if (pontosJ > 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.paus[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>${nome} Estourou!</p> <br>`
+                    fimB()
+                } else if (pontosJ == 7.5) {
+                    pontos.innerHTML = `<p>(${pontosJ}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divMsg.innerHTML += `${naipeCarta.paus[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimJ()
+                }
+            }
+        } else {
+            puxar();
+        }
+    }
+    function iniciar() {
+        nomeJ.innerHTML = `${nome}: <br><br>`
+        nomeB.innerHTML = 'Banca: <br><br>'
+        puxar();
+    }
+
+    function passarVez() {
+        var carta = Number(Math.random() * (cartas.carta.length - 1)).toFixed();
+        var naipeA = Number(Math.random() * (naipeCarta.naipe.length - 1)).toFixed();
+        var atual = carta + naipeA;
+        btnPuxar.disabled = true;
+        btnPassar.disabled = true;
+
+
+        if (atual != anterior) {
+            pontosB += cartas.valor[carta]
+            anterior = atual
+            if (naipeA == 0) {
+                if (pontosB < 7) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.espadas[carta]}`
+                    if (pontosB > pontosJ) {
+                        fimB();
+                    } else {
+                        setTimeout(passarVez, 2000);
+                    }
+                } else if (pontosB > 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.espadas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>Banca Estourou!</p> <br>`
+                    fimJ()
+                } else if (pontosB == 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.espadas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimB()
+                }
+            } else if (naipeA == 1) {
+                if (pontosB < 7) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.ouros[carta]}`
+                    if (pontosB > pontosJ) {
+                        fimB()
+                    } else {
+                        setTimeout(passarVez, 2000);
+
+                    }
+                } else if (pontosB > 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.ouros[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>Banca Estourou!</p> <br>`
+                    fimJ()
+                } else if (pontosB == 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.ouros[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimB()
+                }
+            } else if (naipeA == 2) {
+                if (pontosB < 7) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.copas[carta]}`
+                    if (pontosB > pontosJ) {
+                        fimB()
+                    } else {
+                        setTimeout(passarVez, 2000);
+
+                    }
+                } else if (pontosB > 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.copas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>Banca Estourou!</p> <br>`
+                    fimJ()
+                } else if (pontosB == 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.copas[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimB()
+                }
+            } else if (naipeA == 3) {
+                if (pontosB < 7) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.paus[carta]}`
+                    if (pontosB > pontosJ) {
+                        fimB()
+                    } else {
+                        setTimeout(passarVez, 1000);
+
+                    }
+                } else if (pontosB > 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.paus[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>Banca Estourou!</p> <br>`
+                    fimJ()
+                } else if (pontosB == 7.5) {
+                    pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
+                    divBanca.innerHTML += `${naipeCarta.paus[carta]}`
+                    aviso.style.display = 'flex'
+                    aviso.innerHTML = `<p>SETE E MEIO!</p> <br>`
+                    fimB()
+                }
+            }
+        } else {
+            passarVez();
+        }
+    }
+
+    function deNovo() {
+        btnPuxar.disabled = false;
+        btnPassar.disabled = false;
+        again.style.display = 'none'
+        divFim.innerHTML = ``
+        divMsg.innerHTML = ``
+        aviso.style.display = 'none'
+        divBanca.innerHTML = ``
+        pontosBa.innerHTML = ``
+        pontos.innerHTML = ``
+        anterior = 0;
+        pontosJ = 0;
+        pontosB = 0;
+        nomeJ.innerHTML = ``
+        nomeB.innerHTML = ''
+        iniciar();
+
+    }
+
+    function fimJ() {
+        if (pontosJ != 0) {
+            divFim.innerHTML = `O ${nome} Venceu com ${pontosJ} Pontos!`
+            btnPuxar.disabled = true;
+            btnPassar.disabled = true;
+            again.style.display = 'block'
+        } else {
+            divFim.innerHTML = `O ${nome} Venceu!`
+            btnPuxar.disabled = true;
+            btnPassar.disabled = true;
+            again.style.display = 'block'
+        }
+    }
+    function fimB() {
+        if (pontosB != 0) {
+            divFim.innerHTML = `A Banca Venceu com ${pontosB} Pontos!`
+            btnPuxar.disabled = true;
+            btnPassar.disabled = true;
+            again.style.display = 'block'
+        } else {
+            divFim.innerHTML = `A Banca Venceu!`
+            btnPuxar.disabled = true;
+            btnPassar.disabled = true;
+            again.style.display = 'block'
+        }
+    }
+</script>
+
+</html>
