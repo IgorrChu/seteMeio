@@ -61,6 +61,7 @@ body {
 #divFim{
     font-size: 28px;
     font-weight: 600;
+    color: white;
 }
 
 .passar {
@@ -167,12 +168,14 @@ button:disabled {
     font-size: 24px;
     margin: 0;
     margin-left: 6rem;
+    color: white;
 }
 
 #nomeB {
     font-size: 24px;
     margin: 0;
     margin-left: 6rem;
+    color: white;
 }
 
 

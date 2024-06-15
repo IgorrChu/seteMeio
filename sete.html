@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sete e Meio</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="ico.png" type="image/x-icon">
 </head>
 
 <body>
@@ -229,7 +230,7 @@
             pontosB += cartas.valor[carta]
             anterior = atual
             if (naipeA == 0) {
-                if (pontosB < 7) {
+                if (pontosB <= 7) {
                     pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
                     divBanca.innerHTML += `${naipeCarta.espadas[carta]}`
                     if (pontosB > pontosJ) {
@@ -251,7 +252,7 @@
                     fimB()
                 }
             } else if (naipeA == 1) {
-                if (pontosB < 7) {
+                if (pontosB <= 7) {
                     pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
                     divBanca.innerHTML += `${naipeCarta.ouros[carta]}`
                     if (pontosB > pontosJ) {
@@ -274,7 +275,7 @@
                     fimB()
                 }
             } else if (naipeA == 2) {
-                if (pontosB < 7) {
+                if (pontosB <= 7) {
                     pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
                     divBanca.innerHTML += `${naipeCarta.copas[carta]}`
                     if (pontosB > pontosJ) {
@@ -297,7 +298,7 @@
                     fimB()
                 }
             } else if (naipeA == 3) {
-                if (pontosB < 7) {
+                if (pontosB <= 7) {
                     pontosBa.innerHTML = `<p>(${pontosB}) ${cartas.carta[carta]} de ${naipeCarta.naipe[naipeA]}</p> <br>`
                     divBanca.innerHTML += `${naipeCarta.paus[carta]}`
                     if (pontosB > pontosJ) {
